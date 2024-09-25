@@ -8,4 +8,6 @@
 import Hostcalculator
 
 
-a = Hostcalculator.hosts()
+a = Hostcalculator.hosts(verbose=True).cidr_to_fullmask(2)
+
+pass
