@@ -39,37 +39,34 @@ class hosts:
         also fix the hosts to correspond with the cidr, somehow off by 1
         """
         
+    def populate_subnet_table(self):
 
-
-    def __init__(self, verbose=True):
-
-        self.subnets = {} #will get populated once imported. (init)
-        self.verbose = verbose
-
+        self.subnets = {}
         for i in range(32, 0, -1):
             #no dependency quick and dirty way to convert a cidr to 
             #a subnet mask
 
-
-            long_subnet =  "{:031d}".format( int("1"* (i) ) )[::-1]
+            long_subnet =  "{:032d}".format( int("1"*(i) ) )[::-1]
             #print all the bits and pad it with 0. [::-1] cause it pads it from the left
             long_subnet =   [long_subnet[i:i+8] for i in range(0, len(long_subnet), 8)]
             #get octet by 8 (see the 8 at the end of the range()) 
-            pass
             long_subnet = [int(("0b" +octet), 2) for octet in long_subnet]
             #manually add 0b then convert to base10 
-            
 
-
-            self.subnets.update({33-i : [2**i, long_subnet]})
-            pass
+            projected_hosts = 2**((i-32)*-1)
+            self.subnets.update({i : [projected_hosts, long_subnet]})
         if self.verbose== True: 
             for keys, value in self.subnets.items():
                 print(keys, "=>", value)
-                pass
+                
 
-    
+        self.subnets.update({0 : [2**32, "0.0.0.0"]})
 
+
+    def __init__(self, verbose=True):
+        self.verbose = verbose
+        self.populate_subnet_table()
+        pass
         #print(self.subnets)
 
 
