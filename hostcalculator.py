@@ -7,7 +7,7 @@ Usage:
 
 import Hostcalculator
 
-object_name = Hostcalculator.hosts()#to run hosts table from __init__
+object_name = Hostcalculator.hosts()
 """
 
 
@@ -35,8 +35,6 @@ class hosts:
         work with the most significant bit turned on; on that octet
         increment by that octet.
 
-        TODO: Fix the long subnet,
-        also fix the hosts to correspond with the cidr, somehow off by 1
         """
         
     def populate_subnet_table(self):

@@ -6,3 +6,10 @@ Noticed some subnets are not populating right
 It was printing out the opposite way, so, we have to fix it.
 
 
+Oct 3, Post Helene. Georgia Nerf, 1204hrs
+Fixed the subnetting table for they were printing the opposite way,
+added the /0 manually at the end to keep the table mapping easy.
+
+Renamed Hostcalculator to hostcalculator
+
+

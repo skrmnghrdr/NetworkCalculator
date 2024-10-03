@@ -14,5 +14,4 @@ import Hostcalculator
 
 
 a = Hostcalculator.hosts(verbose=True).cidr_to_fullmask(24)
-b = Hostcalculator.hosts
 pass
