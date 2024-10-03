@@ -53,13 +53,13 @@ class hosts:
 
             projected_hosts = 2**((i-32)*-1)
             self.subnets.update({i : [projected_hosts, long_subnet]})
+
+        self.subnets.update({0 : [2**32,[0,0,0,0] ]})
+
         if self.verbose== True: 
             for keys, value in self.subnets.items():
                 print(keys, "=>", value)
-                
-
-        self.subnets.update({0 : [2**32, "0.0.0.0"]})
-
+ 
 
     def __init__(self, verbose=True):
         self.verbose = verbose
@@ -68,3 +68,5 @@ class hosts:
         #print(self.subnets)
 
 
+if __name__ == "__main__":
+    hosts()
