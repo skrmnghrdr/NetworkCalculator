@@ -16,12 +16,25 @@ class hosts:
     def cidr_to_fullmask(self, cidr):
 
         #returns a 2D array [hosts [whole subnet]]
-        return self.subnets[int(cidr)]
+        fullmask_and_hosts = self.subnets[int(cidr)]
+        long_subnet_string = ".".join([str(x) for x in fullmask_and_hosts[1]])
 
-    def calculate_nflb(self, ip, cidr):
+        if self.verbose == True:
+            print("CIDR: {0} Available hosts: {1}, Long Subnet: {2}".format(
+                str(cidr), 
+                str(fullmask_and_hosts[0]),
+                long_subnet_string
+                ))
+            
+        return fullmask_and_hosts
+
+    def calculate_nflb(self, ip, subnet=False):
         self.ip = str(ip)
         self.cidr = int(cidr)
 
+        if subnet != False:
+            #calculate with long subnet
+            pass
         self.last_assignable = ""
         self.first_assignable = ""
         self.networkaddr = ""
@@ -64,9 +77,13 @@ class hosts:
     def __init__(self, verbose=True):
         self.verbose = verbose
         self.populate_subnet_table()
+        print('Object created')
+
         pass
-        #print(self.subnets)
 
 
 if __name__ == "__main__":
-    hosts()
+    pass
+    #test environment
+    hosts(verbose=True).cidr_to_fullmask(24)
+    pass
