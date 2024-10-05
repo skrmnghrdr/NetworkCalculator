@@ -33,18 +33,21 @@ class hosts:
 
     def calculate_nflb(self, ip, subnet):
         """
-        Accepts both cidr and long subnet as a string
+        Accepts both (int)cidr and (string)long subnet
         """
 
         if type(subnet) == int:
             #from subnet dictionary, get cidr and long subnet
             subnet = self.subnets[subnet][1]
-
+        else:
+            
+            #we convert the dec to bin and strip the "0b" and get all the bits into one long liner
+            subnet = ''.join( ["{:<08}".format(bin(int(x))[2:]) for x in subnet.split('.')])
         #TODO
         #start to get the network IP first:
         #bin(255) and 0b11111100 
         #0b11111100 and 0b11111100 #both work
-        
+
         self.last_assignable = ""
         self.first_assignable = ""
         self.networkaddr = ""
@@ -53,7 +56,6 @@ class hosts:
         
         
         self.ip = str(ip)
-        self.cidr = int(cidr)
 
         #use and method to get the network
         """
@@ -74,6 +76,7 @@ class hosts:
             #a subnet mask
 
             long_subnet =  "{:032d}".format( int("1"*(i) ) )[::-1]
+            on_bits = long_subnet
             #print all the bits and pad it with 0. [::-1] cause it pads it from the left
             long_subnet =   [long_subnet[i:i+8] for i in range(0, len(long_subnet), 8)]
             #get octet by 8 (see the 8 at the end of the range()) 
@@ -81,9 +84,9 @@ class hosts:
             #manually add 0b then convert to base10 
 
             projected_hosts = 2**((i-32)*-1)
-            self.subnets.update({i : [projected_hosts, long_subnet]})
+            self.subnets.update({i : [projected_hosts, long_subnet, on_bits]})
 
-        self.subnets.update({0 : [2**32,[0,0,0,0] ]})
+        self.subnets.update({0 : [2**32,[0,0,0,0], ("0"*32) ]})
 
         if self.verbose== True: 
             for keys, value in self.subnets.items():
@@ -102,5 +105,5 @@ if __name__ == "__main__":
     pass
     #test environment
     #hosts(verbose=True).cidr_to_fullmask(24)
-    hosts(verbose=True).calculate_nflb("192.168.1.0", 32)
+    hosts(verbose=True).calculate_nflb("192.168.1.0", "255.255.255.0")
     pass
