@@ -3,6 +3,8 @@
 """
 A simple host calculator for lazy network people. with no imports/dependency required.
 
+functions return as dicts which are API friendly
+
 Usage:
 
 import Hostcalculator
@@ -28,17 +30,31 @@ class hosts:
             
         return fullmask_and_hosts
 
-    def calculate_nflb(self, ip, subnet=False):
-        self.ip = str(ip)
-        self.cidr = int(cidr)
 
-        if subnet != False:
-            #calculate with long subnet
-            pass
+    def calculate_nflb(self, ip, subnet):
+        """
+        Accepts both cidr and long subnet as a string
+        """
+
+        if type(subnet) == int:
+            #from subnet dictionary, get cidr and long subnet
+            subnet = self.subnets[subnet][1]
+
+        #TODO
+        #start to get the network IP first:
+        #bin(255) and 0b11111100 
+        #0b11111100 and 0b11111100 #both work
+        
         self.last_assignable = ""
         self.first_assignable = ""
         self.networkaddr = ""
-        self.broadcast = ""
+        self.broadcast = ""        
+        
+        
+        
+        self.ip = str(ip)
+        self.cidr = int(cidr)
+
         #use and method to get the network
         """
         logic plan
@@ -85,5 +101,6 @@ class hosts:
 if __name__ == "__main__":
     pass
     #test environment
-    hosts(verbose=True).cidr_to_fullmask(24)
+    #hosts(verbose=True).cidr_to_fullmask(24)
+    hosts(verbose=True).calculate_nflb("192.168.1.0", 32)
     pass
