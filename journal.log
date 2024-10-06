@@ -29,6 +29,14 @@ into a one liner
 
 Oct 6 2024 1000hrs
 took me hours to realize that < fills from right and > fills from left :(, fixed the network address
+            1145hrs
+Down to the last two remaining tasks of the script would be to figure out how to do the carry over or the
+borrowing, I might result into bit by bit addition. it works until you get to the 0 or the 255 where you need to
+borrow a bit, that's the only thing missing on the script before it's laid to rest and I start a new project with flask
+
+
+
+
 
 Trash can:
 
