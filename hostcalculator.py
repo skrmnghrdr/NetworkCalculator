@@ -38,24 +38,31 @@ class hosts:
 
         if type(subnet) == int:
             #from subnet dictionary, get cidr and long subnet
-            subnet = self.subnets[subnet][1]
+            subnet = [str(x) for x in self.subnets[subnet][1]]
+            subnet =  ["{:<08}".format(bin(int(x))[2:]) for x in subnet]
+            pass
         else:
-            
-            #we convert the dec to bin and strip the "0b" and get all the bits into one long liner
-            subnet = ''.join( ["{:<08}".format(bin(int(x))[2:]) for x in subnet.split('.')])
+            #just convert the dec to bin
+            subnet =  ["{:<08}".format(bin(int(x))[2:]) for x in subnet.split('.')]
+
+        #ip = [""bin(x)]   
+        #we convert the dec to bin and strip the "0b" and get all the bits into one long liner
+        
         #TODO
         #start to get the network IP first:
         #bin(255) and 0b11111100 
         #0b11111100 and 0b11111100 #both work
-
+        self.subnet = subnet
+        self.ip = ["{:<08}".format(bin(int(x))[2:]) for x in ip.split('.')]
+        self.networkaddr = [(octet_ip and octet_subnet) for octet_ip, octet_subnet in zip(self.ip, self.subnet)]
         self.last_assignable = ""
         self.first_assignable = ""
-        self.networkaddr = ""
-        self.broadcast = ""        
+        self.broadcast = ""      
+          
         
         
         
-        self.ip = str(ip)
+        
 
         #use and method to get the network
         """
@@ -105,5 +112,5 @@ if __name__ == "__main__":
     pass
     #test environment
     #hosts(verbose=True).cidr_to_fullmask(24)
-    hosts(verbose=True).calculate_nflb("192.168.1.0", "255.255.255.0")
+    hosts(verbose=True).calculate_nflb("192.168.1.100", 24)
     pass

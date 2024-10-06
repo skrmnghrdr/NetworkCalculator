@@ -16,6 +16,10 @@ cleaned the working space before starting to work on NFLB calculator
 
 
 Oct 4, 2024 Friday night. 2330hrs
-
 Added the cidr to fullsubnet mask feature
+
+Oct 5 2024. Saturday night. 
+Realized that I did not need the binary of the octets, I could have just used an "and" operand 
+to use anding to them.
+
 
