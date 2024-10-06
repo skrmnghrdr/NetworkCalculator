@@ -12,11 +12,9 @@ import Hostcalculator
 object_name = Hostcalculator.hosts()
 """
 
-
 class hosts:
 
     def cidr_to_fullmask(self, cidr):
-
         #returns a 2D array [hosts [whole subnet]]
         fullmask_and_hosts = self.subnets[int(cidr)]
         long_subnet_string = ".".join([str(x) for x in fullmask_and_hosts[1]])
@@ -37,34 +35,22 @@ class hosts:
         """
 
         if type(subnet) == int:
-            #from subnet dictionary, get cidr and long subnet
-            subnet = [str(x) for x in self.subnets[subnet][1]]
-            subnet =  ["{:<08}".format(bin(int(x))[2:]) for x in subnet]
+            #from subnet dictionary, get cidr and long subnet         
+            self.subnet =  ["{:<08}".format(bin(int(x))[2:]) for x in subnet]
             pass
         else:
             #just convert the dec to bin
-            subnet =  ["{:<08}".format(bin(int(x))[2:]) for x in subnet.split('.')]
-
-        #ip = [""bin(x)]   
-        #we convert the dec to bin and strip the "0b" and get all the bits into one long liner
-        
-        #TODO
-        #start to get the network IP first:
-        #bin(255) and 0b11111100 
-        #0b11111100 and 0b11111100 #both work
-        self.subnet = subnet
+            self.subnet =  ["{:<08}".format(bin(int(x))[2:]) for x in subnet.split('.')]
+            
         self.ip = ["{:<08}".format(bin(int(x))[2:]) for x in ip.split('.')]
-        self.networkaddr = [(octet_ip and octet_subnet) for octet_ip, octet_subnet in zip(self.ip, self.subnet)]
+        self.networkaddress = [(int(x,2) & int(y,2)) for x, y in zip(self.ip, self.subnet)]
+        pass
+    
         self.last_assignable = ""
         self.first_assignable = ""
         self.broadcast = ""      
           
         
-        
-        
-        
-
-        #use and method to get the network
         """
         logic plan
         put long subnets in binary
@@ -112,5 +98,5 @@ if __name__ == "__main__":
     pass
     #test environment
     #hosts(verbose=True).cidr_to_fullmask(24)
-    hosts(verbose=True).calculate_nflb("192.168.1.100", 24)
+    hosts(verbose=False).calculate_nflb("192.168.0.100", "255.255.255.128")
     pass

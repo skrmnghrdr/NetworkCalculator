@@ -22,4 +22,28 @@ Oct 5 2024. Saturday night.
 Realized that I did not need the binary of the octets, I could have just used an "and" operand 
 to use anding to them.
 
+2211hrs. Took me hours to debug and realize that the "and" does not equal to & (bitwise) operator.
+I did some googling and found out they're different, after solving the issue, i compressed the whole method
+into a one liner
 
+
+Trash can:
+
+Old codes that I might need to reuse someday
+
+        """
+        self.subnet = subnet
+        self.ip = ["{:<08}".format(bin(int(x))[2:]) for x in ip.split('.')]
+        
+        self.networkaddress = ""
+        joined_ip = ''.join(self.ip)
+        joined_subnet = ''.join(self.subnet)
+
+        for i in range(0, len(joined_subnet) ):#its 32 bits long anyways
+            print(joined_ip[i], joined_subnet[i])
+            print(joined_ip[i] and joined_subnet[i])
+
+            #took me hours to debug that "and" does not work like "&"
+            #I WAS LOOKING FOR BITIWISE OPERATOR
+            self.networkaddress += (joined_subnet[i] & joined_ip[i])
+        """
