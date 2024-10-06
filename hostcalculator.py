@@ -42,15 +42,37 @@ class hosts:
             #just convert the dec to bin
             self.subnet =  ["{:<08}".format(bin(int(x))[2:]) for x in subnet.split('.')]
             
-        self.ip = ["{:<08}".format(bin(int(x))[2:]) for x in ip.split('.')]
+        #took me hours to realize that < fills from right and > fills from left :(
+        self.ip = ["{:>08}".format(bin(int(x))[2:]) for x in ip.split('.')]
         self.networkaddress = [(int(x,2) & int(y,2)) for x, y in zip(self.ip, self.subnet)]
-        pass
-    
+
+
+        #might need to get the wildcard mask to determine the rest of the below
         self.last_assignable = ""
         self.first_assignable = ""
         self.broadcast = ""      
           
-        
+        #resume after fixing network address
+        self.host_bits = []
+        #determine the next network address
+        for octet in self.subnet:
+            if octet == "11111111":
+                #if 255, then just append the 0
+                self.host_bits.append("00000000")
+            else:
+                current_octet_host = ""
+                for bit in octet:
+                    #we inverse it manually because ~ operator
+                    #does not work for python3 uses signed ints
+                    if int(bit) == 1:
+                        current_octet_host += "0"
+                    if int(bit) == 0:
+                        current_octet_host += "1"
+                self.host_bits.append(current_octet_host)
+
+                
+        pass
+
         """
         logic plan
         put long subnets in binary
