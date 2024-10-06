@@ -33,26 +33,20 @@ class hosts:
         """
         Accepts both (int)cidr and (string)long subnet
         """
+        #"{:(direction of fill, < or >)(fill)(len)}".format("appears on the colon")
+        #"{:>019}".format("22aaaaaaaaa")
 
         if type(subnet) == int:
             #from subnet dictionary, get cidr and long subnet         
-            self.subnet =  ["{:<08}".format(bin(int(x))[2:]) for x in subnet]
+            self.subnet =  ["{:<08}".format(bin(int(x))[2:]) for x in self.subnets[subnet][1]]
             pass
         else:
             #just convert the dec to bin
             self.subnet =  ["{:<08}".format(bin(int(x))[2:]) for x in subnet.split('.')]
             
-        #took me hours to realize that < fills from right and > fills from left :(
         self.ip = ["{:>08}".format(bin(int(x))[2:]) for x in ip.split('.')]
         self.networkaddress = [(int(x,2) & int(y,2)) for x, y in zip(self.ip, self.subnet)]
 
-
-        #might need to get the wildcard mask to determine the rest of the below
-        self.last_assignable = ""
-        self.first_assignable = ""
-        self.broadcast = ""      
-          
-        #resume after fixing network address
         self.host_bits = []
         #determine the next network address
         for octet in self.subnet:
@@ -60,6 +54,7 @@ class hosts:
                 #if 255, then just append the 0
                 self.host_bits.append("00000000")
             else:
+
                 current_octet_host = ""
                 for bit in octet:
                     #we inverse it manually because ~ operator
@@ -70,19 +65,17 @@ class hosts:
                         current_octet_host += "1"
                 self.host_bits.append(current_octet_host)
 
-                
-        pass
+        #Will need to find a way to +1 on the network and -1 on the broadcast to get
+        #the two remaining things
 
-        """
-        logic plan
-        put long subnets in binary
-        1111 1111.1111 1111.1111 1111.0000 0000
-        NETWORK AND BROADCAST
-        work with the most significant bit turned on; on that octet
-        increment by that octet.
-
-        """
+        self.broadcast = "".join('1' if ''.join(self.ip)[i] == '1' or ''.join(self.host_bits)[i] == '1' else '0' for i in range(32))      
         
+        self.last_assignable = ""
+        self.first_assignable = ""
+        pass #breakpoint
+        self.broadcast = ".".join(str(int(self.broadcast[i:i+8], 2)) for i in range(0, 32, 8))
+     
+
     def populate_subnet_table(self):
 
         self.subnets = {}
@@ -113,12 +106,7 @@ class hosts:
         self.populate_subnet_table()
         print('Object created')
 
-        pass
-
-
 if __name__ == "__main__":
-    pass
     #test environment
     #hosts(verbose=True).cidr_to_fullmask(24)
-    hosts(verbose=False).calculate_nflb("192.168.0.100", "255.255.255.128")
-    pass
+    hosts(verbose=False).calculate_nflb("192.168.0.100", 25)

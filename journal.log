@@ -27,6 +27,9 @@ I did some googling and found out they're different, after solving the issue, i 
 into a one liner
 
 
+Oct 6 2024 1000hrs
+took me hours to realize that < fills from right and > fills from left :(, fixed the network address
+
 Trash can:
 
 Old codes that I might need to reuse someday
