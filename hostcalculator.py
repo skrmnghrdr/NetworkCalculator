@@ -45,7 +45,7 @@ class hosts:
             self.subnet =  ["{:<08}".format(bin(int(x))[2:]) for x in subnet.split('.')]
             
         self.ip = ["{:>08}".format(bin(int(x))[2:]) for x in ip.split('.')]
-        self.networkaddress = [(int(x,2) & int(y,2)) for x, y in zip(self.ip, self.subnet)]
+        self.networkaddress = ''.join( [bin(int(x,2) & int(y,2))[2:].zfill(8) for x, y in zip(self.ip, self.subnet)] )
 
         self.host_bits = []
         #determine the NEXT network address
@@ -77,30 +77,30 @@ class hosts:
         projected_first_assignable = ""
         current_bit_position = 0
 
-
+        #might use enumerate, save the indexes, for subtracting
         #THE CODE BELOW WORKS BUT WE NEED TO 
         #swap the broadcast to the network to get the first assignable IP
-        for i in range(len(self.broadcast)): 
+        for i in range(len(self.networkaddress)): 
             #could use a bitwise addititon but we'll do it manually anyways
             print('for loop {0}'.format(i))   
-            if int(self.broadcast[::-1][i]) == 1 and carry == 1:
-                print(int(self.broadcast[::-1][i]))
+            if int(self.networkaddress[::-1][i]) == 1 and carry == 1:
+                print(int(self.networkaddress[::-1][i]))
                 #we add them both
                 projected_first_assignable += "0"
                 continue
-            elif int(self.broadcast[::-1][i]) == 0 and carry == 1:
-                print(int(self.broadcast[::-1][i]))
+            elif int(self.networkaddress[::-1][i]) == 0 and carry == 1:
+                print(int(self.networkaddress[::-1][i]))
                 projected_first_assignable += "1"
                 carry = 0
 
-            elif int(self.broadcast[::-1][i]) == 1 and carry == 0:
+            elif int(self.networkaddress[::-1][i]) == 1 and carry == 0:
                 projected_first_assignable += "1"
-            elif int(self.broadcast[::-1][i]) == 0 and carry == 0:
+            elif int(self.networkaddress[::-1][i]) == 0 and carry == 0:
                 projected_first_assignable += "0"
         pass 
-        self.last_assignable = projected_first_assignable[::-1]
+        self.first_assignable = projected_first_assignable[::-1]
             
-        pass #breakpoint
+        pass #breakpointf
         self.broadcast = ".".join(str(int(self.broadcast[i:i+8], 2)) for i in range(0, 32, 8))
         pass
 
