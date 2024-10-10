@@ -37,24 +37,9 @@ borrow a bit, that's the only thing missing on the script before it's laid to re
 
 
 
+Oct 10, 2024 1523hrs:
+Took me 1.5 hours debugging the whole thing because I missed a [::-1] at one of the variables. I had to manually
+look and count each ip.
 
-Trash can:
-
-Old codes that I might need to reuse someday
-
-        """
-        self.subnet = subnet
-        self.ip = ["{:<08}".format(bin(int(x))[2:]) for x in ip.split('.')]
-        
-        self.networkaddress = ""
-        joined_ip = ''.join(self.ip)
-        joined_subnet = ''.join(self.subnet)
-
-        for i in range(0, len(joined_subnet) ):#its 32 bits long anyways
-            print(joined_ip[i], joined_subnet[i])
-            print(joined_ip[i] and joined_subnet[i])
-
-            #took me hours to debug that "and" does not work like "&"
-            #I WAS LOOKING FOR BITIWISE OPERATOR
-            self.networkaddress += (joined_subnet[i] & joined_ip[i])
-        """
+THe only thing that's left is to return everything in a nice JSON format so it's API friendly
+and further clean the code

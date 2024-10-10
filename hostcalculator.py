@@ -35,12 +35,19 @@ class hosts:
         """
         #"{:(direction of fill, < or >)(fill)(len)}".format("appears on the colon")
         #"{:>019}".format("22aaaaaaaaa")
-
+        self.NFLB = {}
         if type(subnet) == int:
+            self.NFLB.update({
+                "CIDR" : str(subnet),
+                "subnet" : self.subnets[subnet][1] #PLEASE CONVERT TO STRING LATER
+            })
             #from subnet dictionary, get cidr and long subnet         
             self.subnet =  ["{:<08}".format(bin(int(x))[2:]) for x in self.subnets[subnet][1]]
             pass
         else:
+            self.NFLB.update({
+                "subnet" : subnet,
+            })
             #just convert the dec to bin
             self.subnet =  ["{:<08}".format(bin(int(x))[2:]) for x in subnet.split('.')]
             
@@ -70,19 +77,16 @@ class hosts:
 
         self.broadcast = "".join('1' if ''.join(self.ip)[i] == '1' or ''.join(self.host_bits)[i] == '1' else '0' for i in range(32))      
         
-        self.last_assignable = ""
-        self.first_assignable = ""
+
 
         carry = 1 #initial 1 cause we need to add 1
         projected_first_assignable = ""
         current_bit_position = 0
 
         #might use enumerate, save the indexes, for subtracting
-        #THE CODE BELOW WORKS BUT WE NEED TO 
-        #swap the broadcast to the network to get the first assignable IP
         for i in range(len(self.networkaddress)): 
             #could use a bitwise addititon but we'll do it manually anyways
-            print('for loop {0}'.format(i))   
+          
             if int(self.networkaddress[::-1][i]) == 1 and carry == 1:
                 print(int(self.networkaddress[::-1][i]))
                 #we add them both
@@ -92,16 +96,55 @@ class hosts:
                 print(int(self.networkaddress[::-1][i]))
                 projected_first_assignable += "1"
                 carry = 0
-
             elif int(self.networkaddress[::-1][i]) == 1 and carry == 0:
                 projected_first_assignable += "1"
             elif int(self.networkaddress[::-1][i]) == 0 and carry == 0:
                 projected_first_assignable += "0"
         pass 
         self.first_assignable = projected_first_assignable[::-1]
-            
-        pass #breakpointf
+
+        #messy, but converts long 32bit to 4 octet then put as decimal
+        #self.first_assignable = [int(("0b"+octet), 2) for octet in [self.first_assignable[i:i+8] for i in range(0, len(self.first_assignable), 8)]]
+        
+        #calculate the last assignable
+        borrowed_bit_index = 0
+        projected_last_assignable = ""
+
+        #find the first significant bit
+        for index, bit in enumerate(self.broadcast[::-1]):
+            if int(bit): #if 1
+                print('1 true ran')
+                borrowed_bit_index = index
+                projected_last_assignable = "0"
+                pass
+                projected_last_assignable += (("1" * borrowed_bit_index) )
+                break
+            elif not int(bit): #0
+                print('NOT RAN')
+                current_index = index
+
+
+        projected_last_assignable = "{1}{0}".format(self.broadcast[::-1][(borrowed_bit_index+1):],projected_last_assignable)
+        projected_last_assignable = [int(("0b"+octet), 2) for octet in [projected_last_assignable[::-1][i:i+8] for i in range(0, len(projected_last_assignable), 8)]]
+
+        #uncomment this for DDN broadcast.
+        #pretty dirty and unarranged. :(
+        print('debug')
+
+        self.last_assignable = ".".join(str(x) for x in projected_last_assignable)
+        self.first_assignable = [int(("0b"+octet), 2) for octet in [self.first_assignable[i:i+8] for i in range(0, len(self.first_assignable), 8)]]
         self.broadcast = ".".join(str(int(self.broadcast[i:i+8], 2)) for i in range(0, 32, 8))
+        self.networkaddress = ".".join(str(x) for x in [int(("0b"+octet), 2) for octet in [self.networkaddress[i:i+8] for i in range(0, 32, 8) ]])
+
+        self.NFLB.update({
+            "ip" : ip,
+            "network" : self.networkaddress,
+            "first" : self.first_assignable,
+            "last" : self.last_assignable,
+            "broadcast" : self.broadcast,
+        })
+
+        return self.NFLB
         pass
 
     def populate_subnet_table(self):
@@ -137,4 +180,4 @@ class hosts:
 if __name__ == "__main__":
     #test environment
     #hosts(verbose=True).cidr_to_fullmask(24)
-    hosts(verbose=False).calculate_nflb("192.168.0.100", 25)
+    hosts(verbose=False).calculate_nflb("192.168.0.0", 18)
