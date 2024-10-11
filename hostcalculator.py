@@ -152,6 +152,9 @@ class hosts:
             "broadcast" : self.broadcast,
         })
 
+        if self.verbose == True:
+            self.pretty_print()
+
         return self.NFLB
 
     def populate_subnet_table(self):
@@ -179,17 +182,22 @@ class hosts:
 
         self.subnets.update({0 : [2**32,[0,0,0,0], ("0"*32) ]})
 
-        if self.verbose== True: 
+        if self.verbose == True: 
             for keys, value in self.subnets.items():
                 print(keys, "=>", value)
  
 
+    def pretty_print(self):
+        print("""\nIP: {0}\nSubnet: {1}\nCIDR: {2}\nNetwork: {3}\nFirst Assign: {4}\nLast Assign: {5}\nBroadcast: {6}\n""".format(self.NFLB['ip'],self.NFLB['subnet'],self.NFLB['CIDR'],self.NFLB['network'],self.NFLB['first'],self.NFLB['last'],self.NFLB['broadcast']))
+
     def __init__(self, verbose=True):
         self.verbose = verbose
         self.populate_subnet_table()
-        print('Object created')
+        
+
+
 
 if __name__ == "__main__":
     #pass
-    print('Please see documentation for usage')
+    hosts(verbose=True).calculate_nflb("192.168.1.1", 24)
     #hosts(verbose=False).calculate_nflb("192.168.0.0", "255.255.255.0")
